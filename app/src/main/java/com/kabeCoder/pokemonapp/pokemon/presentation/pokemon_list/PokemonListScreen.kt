@@ -1,7 +1,6 @@
 package com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list
 
 import android.widget.Toast
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,7 +12,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -50,7 +48,6 @@ fun PokemonListScreenRoot(
         onAction = { action ->
             when (action) {
                 is PokemonListAction.OnPokemonClick -> onPokemonClick()
-                else -> Unit
             }
             viewModel.onAction(action)
         }

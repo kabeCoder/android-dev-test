@@ -3,9 +3,16 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.ksp)
+    alias(libs.plugins.room)
 }
 
 android {
+
+    room {
+        schemaDirectory("$projectDir/schemas")
+    }
+
     namespace = "com.kabeCoder.pokemonapp"
     compileSdk = 35
 
@@ -67,4 +74,8 @@ dependencies {
     implementation(libs.bundles.ktor)
 
     implementation(libs.bundles.koin)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 }
