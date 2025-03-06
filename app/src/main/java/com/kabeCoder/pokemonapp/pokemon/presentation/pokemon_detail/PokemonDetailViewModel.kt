@@ -1,69 +1,69 @@
-package com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list
+package com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_detail
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.kabeCoder.pokemonapp.core.database.mappers.toPokemonDetail
 import com.kabeCoder.pokemonapp.core.domain.pokemon.LocalPokemonDataSource
 import com.kabeCoder.pokemonapp.core.domain.util.onError
 import com.kabeCoder.pokemonapp.core.domain.util.onSuccess
 import com.kabeCoder.pokemonapp.pokemon.domain.PokemonDataSource
-import com.kabeCoder.pokemonapp.pokemon.presentation.models.toPokemonUi
+import com.kabeCoder.pokemonapp.pokemon.domain.toPokemon
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class PokemonListViewModel(
+class PokemonDetailViewModel(
     private val pokemonDataSource: PokemonDataSource,
     private val localPokemonDataSource: LocalPokemonDataSource
 ) : ViewModel() {
 
-    private var _state = MutableStateFlow(PokemonListState())
+    private var _state = MutableStateFlow(PokemonDetailState())
     val state = _state
-        .onStart { loadPokemon() }
         .stateIn(
             viewModelScope,
             SharingStarted.WhileSubscribed(5000L),
-            PokemonListState()
+            PokemonDetailState()
         )
 
-    private val _events = Channel<PokemonListEvent>()
+    private val _events = Channel<PokemonDetailEvent>()
     val events = _events.receiveAsFlow()
 
-    private fun loadPokemon() {
+    fun loadPokemonDetail(url: String) {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
 
             pokemonDataSource
-                .getPokemon()
-                .onSuccess { pokemon ->
-                    _state.update { it ->
+                .getPokemonDetail(url)
+                .onSuccess { pokemonDetail ->
+                    _state.update {
                         it.copy(
                             isLoading = false,
-                            pokemon = pokemon.map { it.toPokemonUi() }
+                            pokemonDetail = pokemonDetail
                         )
                     }
-                    localPokemonDataSource.insertPokemon(pokemon)
+                    localPokemonDataSource.updatePokemon(pokemonDetail.toPokemon())
                 }
-                .onError { error ->
-                    val localPokemon = localPokemonDataSource.getPokemon().firstOrNull()
 
-                    if (!localPokemon.isNullOrEmpty()) {
+                .onError { error ->
+
+                    val localPokemon = localPokemonDataSource.getPokemonByUrl(url)
+
+                    if (localPokemon != null) {
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                pokemon = localPokemon.map { it.toPokemonUi() }
+                                pokemonDetail = localPokemon.toPokemonDetail()
                             )
                         }
                     } else {
                         _state.update { it.copy(isLoading = false) }
-                        _events.send(PokemonListEvent.Error(error))
+                        _events.send(PokemonDetailEvent.Error(error))
                     }
+
                 }
         }
     }

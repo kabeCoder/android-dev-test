@@ -14,4 +14,8 @@
     <string name="not_acceptable_error">Error: Not Acceptable</string>
     <string name="internal_server_error">Error: Internal Server Error</string>
     <string name="service_unavailable">Error: Service Unavailable</string>
+    <string name="label_weight">"Weight: "</string>
+    <string name="label_type">"Type: "</string>
+    <string name="label_order">"Order: "</string>
+    <string name="label_pokemon">"Pokémon: "</string>
 </resources>

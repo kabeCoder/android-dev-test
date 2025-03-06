@@ -5,4 +5,5 @@ import com.kabeCoder.pokemonapp.core.domain.util.Result
 
 interface PokemonDataSource {
     suspend fun getPokemon():  Result<List<Pokemon>, DataError.Network>
+    suspend fun getPokemonDetail(url: String): Result<PokemonDetail, DataError.Network>
 }

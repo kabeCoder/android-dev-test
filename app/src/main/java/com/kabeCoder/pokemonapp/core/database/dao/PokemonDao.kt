@@ -4,6 +4,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import com.kabeCoder.pokemonapp.core.database.entity.PokemonEntity
 import kotlinx.coroutines.flow.Flow
 
@@ -15,4 +16,9 @@ interface PokemonDao {
     @Query("SELECT * FROM pokemonentity")
     fun getPokemon(): Flow<List<PokemonEntity>>
 
+    @Query("SELECT * FROM pokemonentity WHERE url = :url LIMIT 1")
+    suspend fun getPokemonByUrl(url: String): PokemonEntity?
+
+    @Update
+    suspend fun updatePokemon(pokemon: PokemonEntity)
 }

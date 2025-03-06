@@ -8,5 +8,8 @@ data class PokemonEntity(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val url: String,
+    val order: Int,
+    val type: List<String>,
+    val weight: Int,
     val createdAt: Long
 )

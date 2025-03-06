@@ -29,7 +29,7 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PokemonListScreenRoot(
-    onPokemonClick: () -> Unit,
+    onPokemonClick: (String) -> Unit,
     viewModel: PokemonListViewModel = koinViewModel()
 ) {
     val state by viewModel.state.collectAsStateWithLifecycle()
@@ -50,9 +50,8 @@ fun PokemonListScreenRoot(
         state = state,
         onAction = { action ->
             when (action) {
-                is PokemonListAction.OnPokemonClick -> onPokemonClick()
+                is PokemonListAction.OnPokemonClick -> onPokemonClick(action.url)
             }
-            viewModel.onAction(action)
         }
     )
 }
@@ -82,7 +81,7 @@ fun PokemonListScreen(
                 items(state.pokemon) { pokemonUi ->
                     PokemonListItem(
                         pokemonUi = pokemonUi,
-                        onClick = { onAction(PokemonListAction.OnPokemonClick(pokemonUi)) },
+                        onClick = { onAction(PokemonListAction.OnPokemonClick(pokemonUi.url)) },
                         modifier = Modifier
                             .fillMaxWidth()
                     )

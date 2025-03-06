@@ -16,6 +16,7 @@ navigationCompose = "2.8.4"
 ksp = "2.0.0-1.0.22"
 room = "2.6.1"
 coilCompose = "3.1.0"
+gson = "2.10.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -51,6 +52,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 room-runtime = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
 coil-compose = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coilCompose" }
 coil-network-okhttp = { module = "io.coil-kt.coil3:coil-network-okhttp", version.ref = "coilCompose" }
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

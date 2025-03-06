@@ -6,9 +6,12 @@ import com.kabeCoder.pokemonapp.core.domain.util.DataError
 import com.kabeCoder.pokemonapp.core.domain.util.Result
 import com.kabeCoder.pokemonapp.core.domain.util.map
 import com.kabeCoder.pokemonapp.pokemon.data.mappers.toPokemon
+import com.kabeCoder.pokemonapp.pokemon.data.mappers.toPokemonDetail
+import com.kabeCoder.pokemonapp.pokemon.data.networking.dto.PokemonDetailDto
 import com.kabeCoder.pokemonapp.pokemon.data.networking.dto.PokemonResponseDto
 import com.kabeCoder.pokemonapp.pokemon.domain.Pokemon
 import com.kabeCoder.pokemonapp.pokemon.domain.PokemonDataSource
+import com.kabeCoder.pokemonapp.pokemon.domain.PokemonDetail
 import io.ktor.client.HttpClient
 
 class KtorRemotePokemonDataSource(
@@ -21,5 +24,10 @@ class KtorRemotePokemonDataSource(
         ).map { response ->
             response.results.map { it.toPokemon() }
         }
+    }
+
+    override suspend fun getPokemonDetail(url: String): Result<PokemonDetail, DataError.Network> {
+        return httpClient.get<PokemonDetailDto>(route = url)
+            .map { it.toPokemonDetail() }
     }
 }

@@ -8,6 +8,7 @@ import com.kabeCoder.pokemonapp.core.database.RoomLocalDataSource
 import com.kabeCoder.pokemonapp.core.domain.pokemon.LocalPokemonDataSource
 import com.kabeCoder.pokemonapp.pokemon.data.networking.KtorRemotePokemonDataSource
 import com.kabeCoder.pokemonapp.pokemon.domain.PokemonDataSource
+import com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_detail.PokemonDetailViewModel
 import com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list.PokemonListViewModel
 import kotlinx.coroutines.CoroutineScope
 import org.koin.android.ext.koin.androidApplication
@@ -31,10 +32,11 @@ val appModule = module {
         ).build()
     }
 
-    single { get<PokemonDatabase>().pokemonDao }
+    single { get<PokemonDatabase>().pokemonDao() }
 
     singleOf(::KtorRemotePokemonDataSource).bind<PokemonDataSource>()
     singleOf(::RoomLocalDataSource).bind<LocalPokemonDataSource>()
 
     viewModelOf(::PokemonListViewModel)
+    viewModelOf(::PokemonDetailViewModel)
 }
