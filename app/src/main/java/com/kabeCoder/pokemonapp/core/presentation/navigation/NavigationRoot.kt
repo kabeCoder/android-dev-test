@@ -1,4 +1,4 @@
-package com.kabeCoder.pokemonapp
+package com.kabeCoder.pokemonapp.core.presentation.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder

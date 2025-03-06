@@ -17,11 +17,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kabeCoder.pokemonapp.core.presentation.util.ObserveAsEvents
 import com.kabeCoder.pokemonapp.core.presentation.util.toString
 import com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list.components.PokemonListItem
+import com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list.components.previewPokemon
+import com.kabeCoder.pokemonapp.ui.theme.PokemonAppTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -76,10 +79,10 @@ fun PokemonListScreen(
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.pokemon) { pokemon ->
+                items(state.pokemon) { pokemonUi ->
                     PokemonListItem(
-                        pokemon = pokemon,
-                        onClick = { onAction(PokemonListAction.OnPokemonClick(pokemon)) },
+                        pokemonUi = pokemonUi,
+                        onClick = { onAction(PokemonListAction.OnPokemonClick(pokemonUi)) },
                         modifier = Modifier
                             .fillMaxWidth()
                     )
@@ -87,5 +90,20 @@ fun PokemonListScreen(
                 }
             }
         }
+    }
+}
+
+@PreviewLightDark
+@Composable
+private fun PokemonListScreenPreview() {
+    PokemonAppTheme {
+        PokemonListScreen(
+            state = PokemonListState(
+                pokemon = (1..10).map {
+                    previewPokemon
+                }
+            ),
+            onAction = {}
+        )
     }
 }

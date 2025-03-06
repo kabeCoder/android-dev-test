@@ -7,25 +7,39 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import coil3.request.ImageRequest
+import coil3.request.crossfade
+import com.kabeCoder.pokemonapp.R
 import com.kabeCoder.pokemonapp.pokemon.domain.Pokemon
+import com.kabeCoder.pokemonapp.pokemon.presentation.models.PokemonUi
+import com.kabeCoder.pokemonapp.pokemon.presentation.models.toPokemonUi
 import com.kabeCoder.pokemonapp.ui.theme.PokemonAppTheme
 
 @Composable
 fun PokemonListItem(
-    pokemon: Pokemon,
+    pokemonUi: PokemonUi,
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ){
+    val context = LocalContext.current
+
     val contentColor = if (isSystemInDarkTheme()){
         Color.White
     } else {
@@ -38,26 +52,27 @@ fun PokemonListItem(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-//        Icon(
-//            imageVector = ImageVector.vectorResource(id = teamsUi.iconRes),
-//            contentDescription = teamsUi.name,
-//            tint = MaterialTheme.colorScheme.primary,
-//            modifier = Modifier.size(85.dp)
-//        )
+
+        AsyncImage(
+            model = ImageRequest.Builder(context)
+                .data(pokemonUi.imageUrl)
+                .crossfade(true)
+                .build(),
+            placeholder = painterResource(R.drawable.ic_launcher_foreground),
+            contentDescription = "",
+            contentScale = ContentScale.Fit,
+            modifier = Modifier
+                .size(80.dp)
+                .clip(CircleShape)
+        )
 
         Column(
             modifier = Modifier.weight(1f)
         ) {
             Text(
-                text = pokemon.name,
+                text = pokemonUi.name,
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
-                color = contentColor
-            )
-            Text(
-                text = pokemon.url,
-                fontSize = 14.sp,
-                fontWeight = FontWeight.Light,
                 color = contentColor
             )
         }
@@ -69,7 +84,7 @@ fun PokemonListItem(
 private fun TeamsListItemPreview(){
     PokemonAppTheme {
         PokemonListItem(
-            pokemon = previewPokemon,
+            pokemonUi = previewPokemon,
             onClick = {},
             modifier = Modifier.background(MaterialTheme.colorScheme.primaryContainer)
         )
@@ -79,4 +94,4 @@ private fun TeamsListItemPreview(){
 internal val previewPokemon = Pokemon(
     name = "pokemon",
     url = "url"
-)
+).toPokemonUi()

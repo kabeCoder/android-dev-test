@@ -6,6 +6,7 @@ import com.kabeCoder.pokemonapp.core.domain.pokemon.LocalPokemonDataSource
 import com.kabeCoder.pokemonapp.core.domain.util.onError
 import com.kabeCoder.pokemonapp.core.domain.util.onSuccess
 import com.kabeCoder.pokemonapp.pokemon.domain.PokemonDataSource
+import com.kabeCoder.pokemonapp.pokemon.presentation.models.toPokemonUi
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -49,7 +50,7 @@ class PokemonListViewModel(
                     _state.update { it ->
                         it.copy(
                             isLoading = false,
-                            pokemon = pokemon.map { it }
+                            pokemon = pokemon.map { it.toPokemonUi() }
                         )
                     }
                     localPokemonDataSource.insertPokemon(pokemon)
@@ -61,7 +62,7 @@ class PokemonListViewModel(
                         _state.update {
                             it.copy(
                                 isLoading = false,
-                                pokemon = localPokemon
+                                pokemon = localPokemon.map { it.toPokemonUi() }
                             )
                         }
                     } else {

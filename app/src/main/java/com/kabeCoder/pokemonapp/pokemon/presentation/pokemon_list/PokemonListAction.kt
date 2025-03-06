@@ -1,7 +1,7 @@
 package com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list
 
-import com.kabeCoder.pokemonapp.pokemon.domain.Pokemon
+import com.kabeCoder.pokemonapp.pokemon.presentation.models.PokemonUi
 
 sealed interface PokemonListAction {
-    data class OnPokemonClick(val pokemon: Pokemon): PokemonListAction
+    data class OnPokemonClick(val pokemonUi: PokemonUi): PokemonListAction
 }

@@ -1,4 +1,4 @@
-package com.kabeCoder.pokemonapp
+package com.kabeCoder.pokemonapp.core.presentation.navigation
 
 import kotlinx.serialization.Serializable
 
