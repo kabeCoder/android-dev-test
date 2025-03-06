@@ -1,5 +1,7 @@
 package com.kabeCoder.pokemonapp.pokemon.domain
 
+import com.kabeCoder.pokemonapp.BuildConfig
+
 data class PokemonDetail(
     val name: String,
     val order: Int,
@@ -22,11 +24,10 @@ data class TypeInfo(
     val url: String
 )
 
-
 fun PokemonDetail.toPokemon(): Pokemon {
     return Pokemon(
         name = this.name,
-        url = "https://pokeapi.co/api/v2/pokemon/${this.order}/",
+        url = "${BuildConfig.POKEMON_API_BASE_URL}/pokemon/${this.order}/",
         order = this.order,
         types = this.types.map { it.type.name },
         weight = this.weight,
