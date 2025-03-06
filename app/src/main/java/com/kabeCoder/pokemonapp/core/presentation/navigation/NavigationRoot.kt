@@ -33,7 +33,9 @@ private fun NavGraphBuilder.pokemonGraph(navController: NavHostController) {
                 onPokemonClick ={ pokemonUrl ->
                     val route = Routes.PokemonDetail.createRoute(pokemonUrl)
                     navController.navigate(route) {
-                        popUpTo(Routes.PokemonList) { inclusive = false }
+                        popUpTo(Routes.PokemonList) {
+                            inclusive = false
+                        }
                     }
                 }
             )

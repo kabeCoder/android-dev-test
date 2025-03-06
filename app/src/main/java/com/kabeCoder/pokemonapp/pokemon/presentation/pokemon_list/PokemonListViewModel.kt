@@ -1,6 +1,5 @@
 package com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.kabeCoder.pokemonapp.core.domain.pokemon.LocalPokemonDataSource
@@ -67,4 +66,6 @@ class PokemonListViewModel(
                 }
         }
     }
+
+
 }

@@ -14,6 +14,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -23,6 +26,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.kabeCoder.pokemonapp.core.presentation.util.ObserveAsEvents
 import com.kabeCoder.pokemonapp.core.presentation.util.toString
 import com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list.components.PokemonListItem
+import com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list.components.SearchBar
 import com.kabeCoder.pokemonapp.pokemon.presentation.pokemon_list.components.previewPokemon
 import com.kabeCoder.pokemonapp.ui.theme.PokemonAppTheme
 import org.koin.androidx.compose.koinViewModel
@@ -62,28 +66,35 @@ fun PokemonListScreen(
     onAction: (PokemonListAction) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    if (state.isLoading) {
-        Box(
-            modifier = modifier
-                .fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
+    var query by remember { mutableStateOf("") }
+
+    Column(modifier = modifier.fillMaxSize()) {
+        Spacer(modifier = Modifier.height(48.dp))
+        SearchBar(query = query, onQueryChanged = { query = it })
+
+        val filteredPokemon = state.pokemon.filter { pokemon ->
+            pokemon.name.contains(query, ignoreCase = true)
         }
-    } else {
-        Column {
-            Spacer(modifier = Modifier.height(48.dp))
+
+        if (state.isLoading) {
+            Box(
+                modifier = modifier
+                    .fillMaxSize(),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
+        } else {
             LazyColumn(
                 modifier = modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                items(state.pokemon) { pokemonUi ->
+                items(filteredPokemon) { pokemonUi ->
                     PokemonListItem(
                         pokemonUi = pokemonUi,
                         onClick = { onAction(PokemonListAction.OnPokemonClick(pokemonUi.url)) },
-                        modifier = Modifier
-                            .fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth()
                     )
                     HorizontalDivider()
                 }

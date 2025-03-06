@@ -18,4 +18,6 @@
     <string name="label_type">"Type: "</string>
     <string name="label_order">"Order: "</string>
     <string name="label_pokemon">"Pokémon: "</string>
+    <string name="label_search_pokemon">Search Pokémon</string>
+    <string name="label_search_icon">Search Icon</string>
 </resources>
