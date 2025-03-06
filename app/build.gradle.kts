@@ -25,7 +25,6 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
     buildTypes {
         debug {
             buildConfigField("String","POKEMON_API_BASE_URL","\"https://pokeapi.co/api/v2/\"")
@@ -48,6 +47,13 @@ android {
     buildFeatures {
         buildConfig = true
         compose = true
+    }
+    packaging{
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+            merges += "META-INF/LICENSE.md"
+            merges += "META-INF/LICENSE-notice.md"
+        }
     }
 }
 
@@ -83,4 +89,19 @@ dependencies {
     implementation(libs.coil.network.okhttp)
 
     implementation(libs.gson)
+
+    androidTestImplementation (libs.junit.jupiter.api)
+    androidTestImplementation (libs.junit.jupiter.engine)
+
+    androidTestImplementation (libs.ui.test.junit4)
+    debugImplementation (libs.ui.test.manifest)
+
+    // Required for running tests
+    androidTestImplementation (libs.core.ktx)
+    androidTestImplementation (libs.androidx.junit.v113)
+    androidTestImplementation (libs.androidx.runner)
+}
+
+tasks.withType<Test> {
+    useJUnitPlatform()
 }
