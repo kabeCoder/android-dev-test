@@ -15,19 +15,29 @@ import com.kabeCoder.pokemonapp.pokemon.domain.PokemonDetail
 import io.ktor.client.HttpClient
 
 class KtorRemotePokemonDataSource(
-    private val httpClient: HttpClient,
-) : PokemonDataSource  {
+    private val httpClient: HttpClient
+) : PokemonDataSource {
 
-    override suspend fun getPokemon(): Result<List<Pokemon>, DataError.Network> {
-        return httpClient.get<PokemonResponseDto>(
-            route = constructRoute("/pokemon")
-        ).map { response ->
-            response.results.map { it.toPokemon() }
-        }
+    private var nextUrl: String? = null
+
+    override suspend fun getPokemon(nextUrl: String?): Result<List<Pokemon>, DataError.Network> {
+        val url = nextUrl ?: constructRoute("/pokemon")
+
+        return httpClient.get<PokemonResponseDto>(route = url)
+            .map { response ->
+                this.nextUrl = response.next
+                response.results.map { it.toPokemon() }
+            }
     }
 
     override suspend fun getPokemonDetail(url: String): Result<PokemonDetail, DataError.Network> {
         return httpClient.get<PokemonDetailDto>(route = url)
             .map { it.toPokemonDetail() }
+    }
+
+    override suspend fun getNextPageUrl(): Result<String, DataError.Network> {
+        return nextUrl?.let {
+            Result.Success(it)
+        } ?: Result.Error(DataError.Network.NOT_FOUND)
     }
 }

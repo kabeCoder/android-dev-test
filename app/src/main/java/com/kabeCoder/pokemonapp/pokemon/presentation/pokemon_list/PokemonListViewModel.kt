@@ -34,6 +34,9 @@ class PokemonListViewModel(
     private val _events = Channel<PokemonListEvent>()
     val events = _events.receiveAsFlow()
 
+    private var nextUrl: String? = null
+    private var isLoadingMore = false
+
     private fun loadPokemon() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true) }
@@ -41,13 +44,20 @@ class PokemonListViewModel(
             pokemonDataSource
                 .getPokemon()
                 .onSuccess { pokemon ->
-                    _state.update { it ->
-                        it.copy(
-                            isLoading = false,
-                            pokemon = pokemon.map { it.toPokemonUi() }
-                        )
+                    pokemonDataSource.getNextPageUrl().onSuccess { url ->
+                        nextUrl = url
+
+                        localPokemonDataSource.insertPokemon(pokemon)
+
+                        _state.update { state ->
+                            state.copy(
+                                isLoading = false,
+                                pokemon = pokemon.map { it.toPokemonUi() },
+                                next = nextUrl,
+                                hasMore = nextUrl != null
+                            )
+                        }
                     }
-                    localPokemonDataSource.insertPokemon(pokemon)
                 }
                 .onError { error ->
                     val localPokemon = localPokemonDataSource.getPokemon().firstOrNull()
@@ -67,5 +77,48 @@ class PokemonListViewModel(
         }
     }
 
+    fun loadNextPage() {
+        if (isLoadingMore || nextUrl == null) return
 
+        isLoadingMore = true
+        viewModelScope.launch {
+            nextUrl?.let { url ->
+                pokemonDataSource
+                    .getPokemon(url)
+                    .onSuccess { pokemon ->
+                        pokemonDataSource.getNextPageUrl().onSuccess { next ->
+                            nextUrl = next
+
+                            _state.update { state ->
+                                state.copy(
+                                    isLoading = false,
+                                    pokemon = state.pokemon + pokemon.map { it.toPokemonUi() }, // Append to existing list
+                                    next = nextUrl,
+                                    hasMore = nextUrl != null
+                                )
+                            }
+                        }
+
+                        localPokemonDataSource.insertPokemon(pokemon)
+                    }
+                    .onError { error ->
+                        val localPokemon = localPokemonDataSource.getPokemon().firstOrNull()
+
+                        if (!localPokemon.isNullOrEmpty()) {
+                            _state.update {
+                                it.copy(
+                                    isLoading = false,
+                                    pokemon = localPokemon.map { it.toPokemonUi() }
+                                )
+                            }
+                        } else {
+                            _state.update { it.copy(isLoading = false) }
+                            _events.send(PokemonListEvent.Error(error))
+                        }
+                    }
+                    .also { isLoadingMore = false }
+            }
+        }
+    }
 }
+

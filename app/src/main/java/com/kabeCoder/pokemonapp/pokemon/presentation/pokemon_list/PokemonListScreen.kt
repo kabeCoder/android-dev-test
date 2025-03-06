@@ -10,9 +10,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -64,9 +66,21 @@ fun PokemonListScreenRoot(
 fun PokemonListScreen(
     state: PokemonListState,
     onAction: (PokemonListAction) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    viewModel: PokemonListViewModel = koinViewModel()
 ) {
     var query by remember { mutableStateOf("") }
+
+    val listState = rememberLazyListState()
+
+    LaunchedEffect(listState.firstVisibleItemIndex) {
+        if (!state.isLoading && listState.layoutInfo.visibleItemsInfo.isNotEmpty()) {
+            val lastVisibleItem = listState.layoutInfo.visibleItemsInfo.last()
+            if (lastVisibleItem.index == state.pokemon.size - 1 && state.hasMore) {
+                viewModel.loadNextPage()
+            }
+        }
+    }
 
     Column(modifier = modifier.fillMaxSize()) {
         Spacer(modifier = Modifier.height(48.dp))
@@ -76,7 +90,7 @@ fun PokemonListScreen(
             pokemon.name.contains(query, ignoreCase = true)
         }
 
-        if (state.isLoading) {
+        if (state.isLoading && state.pokemon.isEmpty()) {
             Box(
                 modifier = modifier
                     .fillMaxSize(),
@@ -86,6 +100,7 @@ fun PokemonListScreen(
             }
         } else {
             LazyColumn(
+                state = listState,
                 modifier = modifier
                     .fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -98,6 +113,12 @@ fun PokemonListScreen(
                     )
                     HorizontalDivider()
                 }
+            }
+        }
+
+        if (state.isLoading && state.hasMore) {
+            Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator()
             }
         }
     }

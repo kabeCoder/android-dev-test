@@ -4,5 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class PokemonResponseDto(
-    val results: List<PokemonDto>
+    val results: List<PokemonDto>,
+    val next: String?
 )

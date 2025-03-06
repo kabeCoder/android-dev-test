@@ -6,17 +6,20 @@ import com.kabeCoder.pokemonapp.core.database.mappers.toPokemonEntity
 import com.kabeCoder.pokemonapp.core.domain.pokemon.LocalPokemonDataSource
 import com.kabeCoder.pokemonapp.pokemon.domain.Pokemon
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 
 class RoomLocalDataSource (
     private val pokemonDao: PokemonDao
 ): LocalPokemonDataSource {
     override suspend fun insertPokemon(pokemon: List<Pokemon>) {
-        val existingPokemon = pokemonDao.getPokemon().firstOrNull()
 
-        if (existingPokemon.isNullOrEmpty()) {
-            pokemonDao.insertPokemon(pokemon.map { it.toPokemonEntity() })
+        val existingUrls = pokemonDao.getPokemon().first().map { it.url }
+
+        val newPokemon = pokemon.filter { it.url !in existingUrls }
+
+        if (newPokemon.isNotEmpty()) {
+            pokemonDao.insertPokemon(newPokemon.map { it.toPokemonEntity() })
         }
     }
 

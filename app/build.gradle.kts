@@ -35,6 +35,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String","POKEMON_API_BASE_URL","\"https://pokeapi.co/api/v2/\"")
         }
     }
     compileOptions {

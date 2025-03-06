@@ -21,4 +21,5 @@ interface PokemonDao {
 
     @Update
     suspend fun updatePokemon(pokemon: PokemonEntity)
+
 }
