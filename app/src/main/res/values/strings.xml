@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">Pokemon App</string>
+    <string name="error_disk_full">Error: Disk Full</string>
+    <string name="error_request_timeout">Error: Request Timeout</string>
+    <string name="too_many_request_error">Error: Too Many Request</string>
+    <string name="no_internet">Error: No Internet</string>
+    <string name="error_payload_too_large">Error: Payload Too Large</string>
+    <string name="error_server_error">Error: Server Error</string>
+    <string name="serialization_error">Error: Serialization Error</string>
+    <string name="unknown_error">Error: Unknown Error</string>
+    <string name="unauthorized_error">Error: Unauthorized</string>
+    <string name="bad_request_error">Error: Bad Request</string>
+    <string name="not_found_error">Error: Not Found</string>
+    <string name="not_acceptable_error">Error: Not Acceptable</string>
+    <string name="internal_server_error">Error: Internal Server Error</string>
+    <string name="service_unavailable">Error: Service Unavailable</string>
+    <string name="label_weight">"Weight: "</string>
+    <string name="label_type">"Type: "</string>
+    <string name="label_order">"Order: "</string>
+    <string name="label_pokemon">"Pokémon: "</string>
+    <string name="label_search_pokemon">Search Pokémon</string>
+    <string name="label_search_icon">Search Icon</string>
+</resources>
